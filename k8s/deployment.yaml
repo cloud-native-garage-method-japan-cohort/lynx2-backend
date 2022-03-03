@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lynx2-backend
+  labels:
+    app: lynx2-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lynx2-backend
+  template:
+    metadata:
+      labels:
+        app: lynx2-backend
+    spec:
+      containers:
+        - name: lynx2-backend
+          image: lynx2-backend
+          ports:
+            - containerPort: 3000
