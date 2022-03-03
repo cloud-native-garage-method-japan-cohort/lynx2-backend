@@ -2,7 +2,8 @@ const express = require('express');
 
 const DiscoveryV1 = require('ibm-watson/discovery/v1');
 const {IamAuthenticator} = require('ibm-watson/auth');
-const config = require('config');
+// const config = require('config');
+const config = require('../config/config')
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -10,11 +11,11 @@ const router = express.Router();
 
 // 接続情報
 const discovery = new DiscoveryV1({
-  version: config.get('watson.discovery.version'),
+  version: config.watson.discovery.version,
   authenticator: new IamAuthenticator({
-    apikey: config.get('watson.discovery.apikey'),
+    apikey: config.watson.discovery.apikey,
   }),
-  serviceUrl: config.get('watson.discovery.serviceUrl'),
+  serviceUrl: config.watson.discovery.serviceUrl,
 });
 
 const createQuery = (categoryLabel, searchStr) => {
@@ -26,8 +27,8 @@ const runQuery = async (categoryLabel, searchStr) => {
   const query = createQuery(categoryLabel, searchStr);
 
   const queryParams = {
-    environmentId: config.get('watson.discovery.environmentId'),
-    collectionId: config.get('watson.discovery.collectionId'),
+    environmentId: config.watson.discovery.environmentId,
+    collectionId: config.watson.discovery.collectionId,
     highlight: true,
     query,
     _return: 'highlight',
