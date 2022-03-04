@@ -18,13 +18,13 @@ const discovery = new DiscoveryV1({
   serviceUrl: config.watson.discovery.serviceUrl,
 });
 
-const createQuery = (categoryLabel, searchStr) => {
+const createQuery = (searchStr) => {
   const texts = searchStr.split(' ').map((item) => `text:"${item}"`).join(',');
-  return `enriched_text.categories.label::"${categoryLabel}",(${texts})`;
+  return `(${texts})`;
 };
 
-const runQuery = async (categoryLabel, searchStr) => {
-  const query = createQuery(categoryLabel, searchStr);
+const runQuery = async (searchStr) => {
+  const query = createQuery(searchStr);
 
   const queryParams = {
     environmentId: config.watson.discovery.environmentId,
@@ -41,15 +41,11 @@ const runQuery = async (categoryLabel, searchStr) => {
   const results = queryResponse.result.results;
   console.log(JSON.stringify(results, null, '\t'));
   if (queryResponse.result.results && queryResponse.result.results.length > 0) {
-    return queryResponse.result.results[0].highlight.text[0]
-        .replace(/<em>/g, '')
-        .replace(/<\/em>/g, '');
-
-    // const textArray = queryResponse.result.results[0].highlight.text
-    // const filtered = textArray.map((text) => {
-    //   return text.replace(/<em>/g, '').replace(/<\/em>/g, '');
-    // });
-    // return filtered;
+    const textArray = queryResponse.result.results[0].highlight.text
+    const filtered = textArray.map((text) => {
+      return text.replace(/<em>/g, '').replace(/<\/em>/g, '');
+    });
+    return filtered;
   } else {
     return '該当する情報が見つかりませんでした。';
   }
@@ -63,9 +59,9 @@ router.post('/search', async (req, res) => {
       return;
     }
 
-    const responseText = await runQuery('/health and fitness/disease', req.body.searchText);
+    const responseTexts = await runQuery(req.body.searchText);
     res.json({
-      responseText,
+      responseTexts,
     });
   } catch (error) {
     console.error(error);

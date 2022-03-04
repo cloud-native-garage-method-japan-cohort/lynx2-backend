@@ -12,7 +12,7 @@ describe('POST /discovery/search', () => {
         });
 
     res.status.should.equal(200);
-    console.log(res.body.responseText);
-    should.exist(res.body.responseText);
+    console.log(res.body.responseTexts);
+    should.exist(res.body.responseTexts);
   });
 });
